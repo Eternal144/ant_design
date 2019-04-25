@@ -10,7 +10,6 @@ class TableForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
     this.state = {
       data: props.value,
       loading: false,
@@ -60,6 +59,7 @@ class TableForm extends PureComponent {
       editable: true,
       isNew: true,
     });
+    console.log(newData);
     this.index += 1;
     this.setState({ data: newData });
   };
@@ -137,8 +137,8 @@ class TableForm extends PureComponent {
     const columns = [
       {
         title: '学号',
-        dataIndex: 'name',
-        key: 'name',
+        dataIndex: 'student_id',
+        key: 'student_id',
         width: '18%',
         render: (text, record) => {
           if (record.editable) {
@@ -146,9 +146,9 @@ class TableForm extends PureComponent {
               <Input
                 value={text}
                 autoFocus
-                onChange={e => this.handleFieldChange(e, 'name', record.key)}
+                onChange={e => this.handleFieldChange(e, 'student_id', record.key)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="成员姓名"
+                placeholder="学号"
               />
             );
           }
@@ -157,17 +157,17 @@ class TableForm extends PureComponent {
       },
       {
         title: '课程编号',
-        dataIndex: 'workId',
-        key: 'workId',
+        dataIndex: 'course_id',
+        key: 'course_id',
         width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
                 value={text}
-                onChange={e => this.handleFieldChange(e, 'workId', record.key)}
+                onChange={e => this.handleFieldChange(e, 'course_id', record.key)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="工号"
+                placeholder="课程编号"
               />
             );
           }
@@ -176,17 +176,17 @@ class TableForm extends PureComponent {
       },
       {
         title: '姓名',
-        dataIndex: 'department',
-        key: 'department',
+        dataIndex: 'sname',
+        key: 'sname',
         width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
                 value={text}
-                onChange={e => this.handleFieldChange(e, 'department', record.key)}
+                onChange={e => this.handleFieldChange(e, 'sname', record.key)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="所属部门"
+                placeholder="姓名"
               />
             );
           }
@@ -195,17 +195,17 @@ class TableForm extends PureComponent {
       },
       {
         title: '课程名称',
-        dataIndex: 'department',
-        key: 'department',
+        dataIndex: 'cname',
+        key: 'cname',
         width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
                 value={text}
-                onChange={e => this.handleFieldChange(e, 'department', record.key)}
+                onChange={e => this.handleFieldChange(e, 'cname', record.key)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="所属部门"
+                placeholder="课程名称"
               />
             );
           }
@@ -214,17 +214,17 @@ class TableForm extends PureComponent {
       },
       {
         title: '选课日期',
-        dataIndex: 'department',
-        key: 'department',
+        dataIndex: 'select_year',
+        key: 'select_year',
         width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
                 value={text}
-                onChange={e => this.handleFieldChange(e, 'department', record.key)}
+                onChange={e => this.handleFieldChange(e, 'select_year', record.key)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="所属部门"
+                placeholder="选课日期"
               />
             );
           }

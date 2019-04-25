@@ -38,26 +38,27 @@ const { RangePicker } = DatePicker;
 // };
 
 
-const tableData = [
-  {
-    key: '1',
-    workId: '00001',
-    name: 'John Brown',
-    department: 'New York No. 1 Lake Park',
-  },
-  {
-    key: '2',
-    workId: '00002',
-    name: 'Jim Green',
-    department: 'London No. 1 Lake Park',
-  },
-  {
-    key: '3',
-    workId: '00003',
-    name: 'Joe Black',
-    department: 'Sidney No. 1 Lake Park',
-  },
-];
+// const tableData = [
+//   {
+//     student_id: '1',
+//     course_id: '00001',
+//     sname: 'John Brown',
+//     cname: 'New York No. 1 Lake Park',
+//     select_year:'124',
+//   },
+  // {
+  //   key: '2',
+  //   workId: '00002',
+  //   name: 'Jim Green',
+  //   department: 'London No. 1 Lake Park',
+  // },
+  // {
+  //   key: '3',
+  //   workId: '00003',
+  //   name: 'Joe Black',
+  //   department: 'Sidney No. 1 Lake Park',
+  // },
+// ];
 
 @connect(({ loading }) => ({
   submitting: loading.effects['form/submitAdvancedForm'],
@@ -66,11 +67,18 @@ const tableData = [
 class AdvancedForm extends PureComponent {
   state = {
     width: '100%',
-    data: 1234,
+    data: [],
   };
 
   componentDidMount() {
     window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
+    fetch("http://localhost:8080/api/info/allRecord")
+    .then(res=>res.json())
+    .then(data=>{
+      this.setState({
+        data:data
+      })
+    });
     
   }
 
@@ -129,7 +137,7 @@ class AdvancedForm extends PureComponent {
       >
         <Card title="成员管理" bordered={false}>
           {getFieldDecorator('members', {
-            initialValue: tableData,
+            initialValue: this.state.data,
           })(<TableForm />)}
         </Card>
         {/* <FooterToolbar style={{ width }}>
