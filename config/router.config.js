@@ -33,7 +33,7 @@ export default [
           {
             path: '/stuslls/info',
             name: 'analysis',
-            component: './List/TableList',
+            component: './Forms/Record/RecordForm',
           },
           {
             path: '/stuslls/pick',
@@ -126,7 +126,7 @@ export default [
             path: '/course/add',
             name: 'advanced',
             //hideInMenu: true,
-            component: './Forms/BasicForm',
+            component: './Forms/AdvancedForm',
           },
           // {
           //   path: '/profile/advanced',
