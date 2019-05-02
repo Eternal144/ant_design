@@ -12,12 +12,12 @@ import {
   Select,
   Popover,
 } from 'antd';
+
 import { connect } from 'dva';
 import styles from '../style.less';
 import FooterToolbar from '@/components/FooterToolbar';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import TableForm from './RecordTableForm';
-
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -135,6 +135,7 @@ class AdvancedForm extends PureComponent {
         content="天津大学本科生选课记录"
         wrapperClassName={styles.advancedForm}
       >
+
         <Card title="成员管理" bordered={false}>
           {getFieldDecorator('members', {
             initialValue: this.state.data,

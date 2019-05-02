@@ -1,14 +1,43 @@
 import React, { PureComponent, Fragment } from 'react';
-import { Table, Button, Input, message, Popconfirm, Divider } from 'antd';
+import { Table, Button, Input, message, Popconfirm, Divider,Form} from 'antd';
 import isEqual from 'lodash/isEqual';
 import styles from '../style.less';
+import { getFileItem } from 'antd/lib/upload/utils';
+
+//const FormItem = Form.Item;
+// const CreateForm = Form.create()(props => {
+//   console.log(props)
+//   const { modalVisible, form, handleAdd, handleModalVisible } = props;
+//   const okHandle = () => {
+//     form.validateFields((err, fieldsValue) => {
+//       if (err) return;
+//       form.resetFields();
+//       handleAdd(fieldsValue);
+//     });
+//   };
+//   return (
+//     <Modal
+//       destroyOnClose
+//       title="新建规则"
+//       visible={modalVisible}
+//       onOk={okHandle}
+//       onCancel={() => handleModalVisible()}
+//     >
+//       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
+//         {form.getFieldDecorator('desc', {
+//           rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
+//         })(<Input placeholder="请输入" />)}
+//       </FormItem>
+//     </Modal>
+//   );
+// });
 
 class TableForm extends PureComponent {
   index = 0;
 
   cacheOriginData = {};
 
-  constructor(props) {
+  constructor(props) {  
     super(props);
     this.state = {
       data: props.value,
@@ -16,6 +45,7 @@ class TableForm extends PureComponent {
       /* eslint-disable-next-line react/no-unused-state */
       value: props.value,
     };
+    //console.log(this.props)
   }
 
   static getDerivedStateFromProps(nextProps, preState) {
@@ -132,7 +162,32 @@ class TableForm extends PureComponent {
     this.setState({ data: newData });
     this.clickedCancel = false;
   }
-
+  renderForm(){
+    //console.log(this.props);
+    // const {
+    //   form: { getFieldDecorator },
+    // } = this.props;
+  //   return <div>
+  //   <FormItem key="name" {...this.formLayout} label="规则名称">
+  //   {form.getFieldDecorator('name', {
+  //     rules: [{ required: true, message: '请输入规则名称！' }],
+  //     initialValue: formVals.name,
+  //   })(<Input placeholder="请输入" />)}
+  // </FormItem>,
+  // <FormItem key="desc" {...this.formLayout} label="规则描述">
+  //   {form.getFieldDecorator('desc', {
+  //     rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
+  //     initialValue: formVals.desc,
+  //   })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+  // </FormItem>
+  //           <Button type="primary" htmlType="submit">
+  //           查询
+  //         </Button>
+  //         <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
+  //           重置
+  //         </Button>
+  //         </div>
+  }
   render() {
     const columns = [
       {
@@ -276,6 +331,19 @@ class TableForm extends PureComponent {
 
     return (
       <Fragment>
+        {this.renderForm()}
+              {/* <FormItem key="name" {...this.formLayout} label="规则名称">
+        {form.getFieldDecorator('name', {
+          rules: [{ required: true, message: '请输入规则名称！' }],
+          initialValue: formVals.name,
+        })(<Input placeholder="请输入" />)}
+      </FormItem>,
+      <FormItem key="desc" {...this.formLayout} label="规则描述">
+        {form.getFieldDecorator('desc', {
+          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
+          initialValue: formVals.desc,
+        })(<TextArea rows={4} placeholder="请输入至少五个字符" />)}
+      </FormItem>, */}
         <Table
           loading={loading}
           columns={columns}
@@ -295,5 +363,6 @@ class TableForm extends PureComponent {
     );
   }
 }
+
 
 export default TableForm;
