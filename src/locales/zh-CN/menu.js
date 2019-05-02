@@ -3,7 +3,7 @@ export default {
   'menu.login': '登录',
   'menu.register': '注册',
   'menu.register.result': '注册结果',
-  'menu.dashboard': '学生选课',
+  'menu.dashboard': '选课',
   'menu.dashboard.analysis': '选课信息', //查 改 删
   'menu.dashboard.monitor': '学生选课',//包含学生可以选择的课程 增
   'menu.form': '学生成绩',
