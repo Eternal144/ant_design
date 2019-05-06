@@ -15,56 +15,19 @@ import {
 
 import { connect } from 'dva';
 import styles from '../style.less';
+//import styles from './style.less';
 import FooterToolbar from '@/components/FooterToolbar';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import TableForm from './StudentTableForm';
+import TableForm from './CourseTableForm';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-
-// const fieldLabels = {
-//   name: '仓库名',
-//   url: '仓库域名',
-//   owner: '仓库管理员',
-//   approver: '审批人',
-//   dateRange: '生效日期',
-//   type: '仓库类型',
-//   name2: '任务名',
-//   url2: '任务描述',
-//   owner2: '执行人',
-//   approver2: '责任人',
-//   dateRange2: '生效日期',
-//   type2: '任务类型',
-// };
-
-
-// const tableData = [
-//   {
-//     student_id: '1',
-//     course_id: '00001',
-//     sname: 'John Brown',
-//     cname: 'New York No. 1 Lake Park',
-//     select_year:'124',
-//   },
-  // {
-  //   key: '2',
-  //   workId: '00002',
-  //   name: 'Jim Green',
-  //   department: 'London No. 1 Lake Park',
-  // },
-  // {
-  //   key: '3',
-  //   workId: '00003',
-  //   name: 'Joe Black',
-  //   department: 'Sidney No. 1 Lake Park',
-  // },
-// ];
 
 @connect(({ loading }) => ({
   submitting: loading.effects['form/submitAdvancedForm'],
 }))
 @Form.create()
-class AdvancedForm extends PureComponent {
+class StudentForm extends PureComponent {
   state = {
     width: '100%',
     data: [],
@@ -72,14 +35,13 @@ class AdvancedForm extends PureComponent {
 
   componentDidMount() {
     window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
-    fetch("http://localhost:8080/api/info/allRecord")
+    fetch("http://localhost:8080/api/info/allCourse")
     .then(res=>res.json())
     .then(data=>{
       data.forEach(element => {
         element.isNew = false
         element.editable = false
       });
-      //console.log(data);
       this.setState({
         data:data
       })
@@ -136,25 +98,18 @@ class AdvancedForm extends PureComponent {
 
     return (
       <PageHeaderWrapper
-        title="选课记录"
-        content="天津大学本科生选课记录"
+        title="课程信息"
+        content="天津大学课程信息记录"
         wrapperClassName={styles.advancedForm}
       >
-
         <Card title="成员管理" bordered={false}>
           {getFieldDecorator('members', {
             initialValue: this.state.data,
           })(<TableForm />)}
         </Card>
-        {/* <FooterToolbar style={{ width }}>
-          {this.getErrorInfo()}
-          <Button type="primary" onClick={this.validate} loading={submitting}>
-            提交
-          </Button>
-        </FooterToolbar> */}
       </PageHeaderWrapper>
     );
   }
 }
 
-export default AdvancedForm;
+export default StudentForm;

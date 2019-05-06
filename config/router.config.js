@@ -57,7 +57,7 @@ export default [
           {
             path: '/score/info',
             name: 'basicform',
-            component: './Forms/BasicForm',
+            component: './List/TableList',
           },
             // hideChildrenInMenu: true,
             // routes: [
@@ -91,6 +91,7 @@ export default [
         ],
       },
       // list
+
       {
         path: '/student',
         icon: 'table',
@@ -99,12 +100,12 @@ export default [
           {
             path: '/student/info',
             name: 'searchtable',
-            component: './List/TableList',
+            component: './Forms/Student/StudentForm',
           },
           {
             path: '/student/add',
             name: 'basiclist',
-            component: './Forms/BasicForm',
+            component: './Forms/StudentBasicForm',
           },
 
         ],
@@ -120,13 +121,13 @@ export default [
           {
             path: '/course/info',
             name: 'basic',
-            component: './List/TableList',
+            component: './Forms/Course/CourseForm',
           },
           {
             path: '/course/add',
             name: 'advanced',
             //hideInMenu: true,
-            component: './Forms/AdvancedForm',
+            component: './Forms/CourseBasicForm',
           },
           // {
           //   path: '/profile/advanced',

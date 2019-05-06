@@ -4,18 +4,26 @@ import {
   Col,
   Table,
   Select,
-  Form, Button, Input, message, Popconfirm, Divider} from 'antd';
+  Form, Button, Input, message, Popconfirm, Divider
+} from 'antd';
 import isEqual from 'lodash/isEqual';
-import styles from '../style.less';
+ import styles from '../style.less';
 
 import { getFileItem } from 'antd/lib/upload/utils';
 import component from '@/locales/zh-CN/component';
+import CourseForm from './CourseForm';
+import { puts } from 'util';
 
 const FormItem = Form.Item;
 const { Option } = Select;
-
+const success = (str)=>{
+  message.success(str);
+}
+const error = (str)=>{
+  message.error(str);
+}
 @Form.create()
-class TableForm extends PureComponent {
+class StudentTableForm extends PureComponent {
   index = 0;
   cacheOriginData = {};
 
@@ -24,10 +32,8 @@ class TableForm extends PureComponent {
     this.state = {
       data: props.value,
       loading: false,
-      /* eslint-disable-next-line react/no-unused-state */
       value: props.value,
     };
-    //console.log(this.props)
   }
   static getDerivedStateFromProps(nextProps, preState) {
     if (isEqual(nextProps.value, preState.value)) {
@@ -42,15 +48,16 @@ class TableForm extends PureComponent {
   getRowByKey(key, newData) {
     const {data} = this.state;
     return (newData || data).filter(item => {
-      return item.rid === key;
+      return item.cid === key;
     })[0];
   }
+
   toggleEditable = (e, key) => {
     e.preventDefault();
     const {data} = this.state;
     const newData = data.map((item)=>({...item}));
     const target = newData.filter(item=>{
-      return item.rid === key
+      return item.cid === key
       }
     )[0];
     if (target) {
@@ -82,18 +89,23 @@ class TableForm extends PureComponent {
   remove(key) {
     const { data } = this.state;
     const { onChange } = this.props;
-    const newData = data.filter(item => item.rid !== key);
+    const newData = data.filter(item => item.cid !== key)[0];
+    console.log(newData);
     this.setState({ data: newData });
     onChange(newData);
-    fetch(`http://localhost:8080/api/delete/record?rid=${key}`,{
+    fetch(`http://localhost:8080/api/delete/course?cid=${key}`,{
       method:"DELETE",
       headers:{
         'content-type': 'application/json'
-      },
+      }, 
     })
     .then(res=>res.json())
-    .then(data=>{
-    });
+    .then(
+      // success("删除成功")
+    )
+    // .error(
+    //   error("删除失败")
+    // )
   }
 
   handleKeyPress(e, key) {
@@ -102,6 +114,7 @@ class TableForm extends PureComponent {
     }
   }
 
+  //在onchange中更新用于更新的字符串。。。对应key去保存。可能发生的变化。一个对象
   handleFieldChange(e, fieldName, key) {
     const { data } = this.state;
     const newData = data.map(item => ({ ...item }));
@@ -122,9 +135,11 @@ class TableForm extends PureComponent {
         this.clickedCancel = false;
         return;
       }
+      //key = cid
       const target = this.getRowByKey(key) || {};
+      const {data} = this.state;
       console.log(target);
-      if (!target.sname || !target.cname || !target.student_id || !target.course_id) {
+      if (!target.sname || !target.gender || !target.adm_year || !target.adm_age ||!target.student_id) {
         message.error('请填写完整成员信息。');
         e.target.focus();
         this.setState({
@@ -132,11 +147,20 @@ class TableForm extends PureComponent {
         });
         return;
       }
-
-      delete target.isNew;
+      delete target.isNew
+      delete target.editable
       this.toggleEditable(e, key);
-      const { data } = this.state;
       const { onChange } = this.props;
+      let url = `http://localhost:8080/api/update/student`
+      fetch(url,{
+        method:"POST",
+        headers:{
+          'content-type': 'application/json'
+        },
+        body:JSON.stringify(target)
+      })
+      .then(res=>res.json())
+      .then(data=>console.log(data))
       onChange(data);
       this.setState({
         loading: false,
@@ -159,51 +183,29 @@ class TableForm extends PureComponent {
     this.clickedCancel = false;
   }
  
-  handleFetch = (type,info)=>{
-    let url = `http://localhost:8080/api/situation/record?${type}=${info}`;
-      fetch(url)
-      .then(res=>res.json())
-      .then(data=>{
-        console.log(data);
-        this.setState({
-          data:data
-        })
-      })
-  }
-
   handleSearch = e => {
-    console.log("yes")
     e.preventDefault();
     const { dispatch, form } = this.props;
     
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      const {studentType,studentInfo,courseType,courseInfo} = fieldsValue;
-      if(!studentInfo && !courseInfo){
-        alert("请输入学生或者课程的信息")
+      const {studentType,studentInfo} = fieldsValue;
+      if(!studentInfo){
+        alert("请输入学生的信息")
         return;
       }
-      //如果两个信息都有,查某个学生某个课的/
-      if(studentInfo && courseInfo){
-        let url = `http://localhost:8080/api/info/grade/?${studentType}=${studentInfo}&${courseType}=${courseInfo}`
-        console.log(url);
-        fetch(url)
-        .then(res=>res.json())
-        .then(data=>
-          this.setState({
-            data:data
-          })
-          )
-      }else if(studentInfo){
-        this.handleFetch(studentType,studentInfo)
-      }else{
-        this.handleFetch(courseType,courseInfo)
-      }
-    })
-  };
+      let url = `http://localhost:8080/api/info/student/?${studentType}=${studentInfo}`
+      fetch(url)
+      .then(res=>res.json())
+      .then(data=>
+        this.setState({
+          data:data
+        })
+      )
+        })
+}
 
   handeleClear = ()=>{
-    console.log("进来了")
     const { form } = this.props;
     form.setFieldsValue({
       studentInfo:null,
@@ -220,42 +222,12 @@ class TableForm extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={4} sm={24}>
-          <FormItem label="学生">
-              {getFieldDecorator('studentType',{
-                initialValue:"sname"
-              })(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value={"sname"}>姓名</Option>
-                  <Option value={"sid"}>学号</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={4} sm={24}>
-          <FormItem label="">
-              {getFieldDecorator('studentInfo')(<Input placeholder="请输入查询对象" />)}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
-              </Button>
-              {/* <Button style={{ marginLeft: 8 }}>
-                重置
-              </Button> */}
-            </span>
-          </Col>
-        </Row>
-
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}> 
-        <Col md={4} sm={24}>
           <FormItem label="课程">
-              {getFieldDecorator('courseType',{
-                initialValue:"cname"
+              {getFieldDecorator('CourseType',{
+                initialValue:"name"
               })(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value={"cname"}>名称</Option>
+                  <Option value={"name"}>名称</Option>
                   <Option value={"cid"}>编号</Option>
                 </Select>
               )}
@@ -263,7 +235,7 @@ class TableForm extends PureComponent {
           </Col>
           <Col md={4} sm={24}>
           <FormItem label="">
-              {getFieldDecorator('courseInfo')(<Input placeholder="请输入查询对象" />)}
+              {getFieldDecorator('CourseInfo')(<Input placeholder="请输入查询对象" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -276,64 +248,44 @@ class TableForm extends PureComponent {
               </Button>
             </span>
           </Col>
-          </Row>
+        </Row>
       </Form>
     );
   }
   render() {
     const columns = [
       {
-        title: '学号',
-        dataIndex: 'student_id',
-        key: 'student_id',
-        width: '18%',
+        title: '课程编号',
+        dataIndex: 'course_id',
+        key: 'course_id',
+        width: '15%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
               defaultValue={text}
                 autoFocus
-                onChange={e => this.handleFieldChange(e, 'student_id', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="学号"
-              />
-            );
-          }
-          return text;
-        },
-      },
-      {
-        title: '课程编号',
-        dataIndex: 'course_id',
-        key: 'course_id',
-        width: '18%',
-        render: (text, record) => {
-          if (record.editable) {
-            return (
-              <div>
-              <Input
-                defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'course_id', record.rid)}
+                onChange={e => this.handleFieldChange(e, 'course_id', record.cid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="课程编号"
               />
-              </div>
             );
           }
           return text;
         },
       },
+
       {
-        title: '姓名',
-        dataIndex: 'sname',
-        key: 'sname',
-        width: '18%',
+        title: '课程名称',
+        dataIndex: 'cname',
+        key: 'cname',
+        width: '15%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
               defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'sname', record.rid)}
+                onChange={e => this.handleFieldChange(e, 'cname', record.cid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="姓名"
               />
@@ -343,18 +295,39 @@ class TableForm extends PureComponent {
         },
       },
       {
-        title: '课程名称',
-        dataIndex: 'cname',
-        key: 'cname',
-        width: '18%',
+        title: '任课教师',
+        dataIndex: 'tname',
+        key: 'tname',
+        width: '14%',
+        render: (text, record) => {
+          if (record.editable) {
+            return (
+              <div>
+              <Input
+                defaultValue={text}
+                onChange={e => this.handleFieldChange(e, 'tname', record.cid)}
+                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                placeholder="任课老师"
+              />
+              </div>
+            );
+          }
+          return text;
+        },
+      },
+      {
+        title: '学分',
+        dataIndex: 'credit',
+        key: 'credit',
+        width: '14%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
               defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'cname', record.rid)}
+                onChange={e => this.handleFieldChange(e, 'credit', record.cid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="课程名称"
+                placeholder="学分"
               />
             );
           }
@@ -362,18 +335,37 @@ class TableForm extends PureComponent {
         },
       },
       {
-        title: '选课日期',
-        dataIndex: 'select_year',
-        key: 'select_year',
-        width: '18%',
+        title: '可选年纪',
+        dataIndex: 'grade',
+        key: 'grade',
+        width: '14%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
               defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'select_year', record.rid)}
+                onChange={e => this.handleFieldChange(e, 'grade', record.cid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="选课日期"
+                placeholder="可选年纪"
+              />
+            );
+          }
+          return text;
+        },
+      },
+      {
+        title: '取消年份',
+        dataIndex: 'cancle_year',
+        key: 'cancle_year',
+        width: '14%',
+        render: (text, record) => {
+          if (record.editable) {
+            return (
+              <Input
+              defaultValue={text}
+                onChange={e => this.handleFieldChange(e, 'cancle_year', record.cid)}
+                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                placeholder="取消年份"
               />
             );
           }
@@ -392,9 +384,9 @@ class TableForm extends PureComponent {
             if (record.isNew) {
               return (
                 <span>
-                  <a onClick={e => this.saveRow(e, record.rid)}>保存</a>
+                  <a onClick={e => this.saveRow(e, record.cid)}>保存</a>
                   <Divider type="vertical" />
-                  <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.rid)}>
+                  <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.cid)}>
                     <a>删除</a>
                   </Popconfirm>
                 </span>
@@ -402,17 +394,17 @@ class TableForm extends PureComponent {
             }
             return (
               <span>
-                <a onClick={e => this.saveRow(e, record.rid)}>保存</a>
+                <a onClick={e => this.saveRow(e, record.cid)}>保存</a>
                 <Divider type="vertical" />
-                <a onClick={e => this.cancel(e, record.rid)}>取消</a>
+                <a onClick={e => this.cancel(e, record.cid)}>取消</a>
               </span>
             );
           }
           return (
             <span>
-              <a onClick={e=>this.toggleEditable(e, record.rid)}>编辑</a>
+              <a onClick={e=>this.toggleEditable(e, record.cid)}>编辑</a>
               <Divider type="vertical" />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.rid)}>
+              <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.cid)}>
                 <a>删除</a>
               </Popconfirm>
             </span>
@@ -450,4 +442,4 @@ class TableForm extends PureComponent {
 }
 
 
-export default TableForm;
+export default StudentTableForm;

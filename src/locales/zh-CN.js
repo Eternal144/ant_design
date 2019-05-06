@@ -18,9 +18,9 @@ export default {
   'layout.user.link.privacy': '隐私',
   'layout.user.link.terms': '条款',
   'app.home.introduce': '介绍',
-  'app.forms.basic.title': '基础表单',
+  'app.forms.basic.title': '学生添加',
   'app.forms.basic.description':
-    '表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。',
+    '此界面用于注册天津大学学生个人信息',
   ...analysis,
   ...exception,
   ...form,
