@@ -67,7 +67,7 @@ class TableList extends PureComponent {
     {
       title: '学分',
       sorter: true,
-      dataIndex: 'redits',
+      dataIndex: 'credit',
     },
     {
       title: '可选年级',
@@ -112,24 +112,24 @@ class TableList extends PureComponent {
     })
   }
 
-  componentDidMount() {
-    let url = `http://localhost:8080/api/fit/course/?sname=eternal`;
-    fetch(url)
-    .then(res=>res.json())
-    .then(data=>{
-      const obj = {
-        list:data,
-        pagination:{
-          total:data.length,
-          pageSize:data.length,
-          current:1
-        }
-      }
-      this.setState({
-        data:obj
-      })
-    })
-  }
+  // componentDidMount() {
+  //   let url = `http://localhost:8080/api/fit/course/?sname=eternal`;
+  //   fetch(url)
+  //   .then(res=>res.json())
+  //   .then(data=>{
+  //     const obj = {
+  //       list:data,
+  //       pagination:{
+  //         total:data.length,
+  //         pageSize:data.length,
+  //         current:1
+  //       }
+  //     }
+  //     this.setState({
+  //       data:obj
+  //     })
+  //   })
+  // }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -198,6 +198,7 @@ class TableList extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       let url = `http://localhost:8080/api/fit/course/?${fieldsValue.status}=${fieldsValue.name}`;
+      console.log(url);
       fetch(url)
       .then(res=>res.json())
       .then(data=>{
@@ -209,6 +210,7 @@ class TableList extends PureComponent {
             current:1
           }
         }
+        console.log(data);
         this.setState({
           data:obj,
           fieldsValue:fieldsValue

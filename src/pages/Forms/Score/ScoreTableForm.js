@@ -15,7 +15,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 
 @Form.create()
-class RecordTableForm extends PureComponent {
+class ScoreTableForm extends PureComponent {
   index = 0;
   cacheOriginData = {};
 
@@ -159,8 +159,8 @@ class RecordTableForm extends PureComponent {
     this.clickedCancel = false;
   }
  
-  handleFetch = (type,info)=>{
-    let url = `http://localhost:8080/api/situation/record?${type}=${info}`;
+  handleFetch = (str,type,info)=>{
+    let url = `http://localhost:8080${str}?${type}=${info}`;
       fetch(url)
       .then(res=>res.json())
       .then(data=>{
@@ -172,7 +172,6 @@ class RecordTableForm extends PureComponent {
   }
 
   handleSearch = e => {
-    console.log("yes")
     e.preventDefault();
     const { dispatch, form } = this.props;
     
@@ -195,9 +194,9 @@ class RecordTableForm extends PureComponent {
           })
           )
       }else if(studentInfo){
-        this.handleFetch(studentType,studentInfo)
+        this.handleFetch('/api/info/allStudentScores',studentType,studentInfo)
       }else{
-        this.handleFetch(courseType,courseInfo)
+        this.handleFetch('/api/info/allSCourseScores',courseType,courseInfo)
       }
     })
   };
@@ -240,9 +239,6 @@ class RecordTableForm extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              {/* <Button style={{ marginLeft: 8 }}>
-                重置
-              </Button> */}
             </span>
           </Col>
         </Row>
@@ -285,7 +281,7 @@ class RecordTableForm extends PureComponent {
         title: '学号',
         dataIndex: 'student_id',
         key: 'student_id',
-        width: '15%',
+        width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -305,7 +301,7 @@ class RecordTableForm extends PureComponent {
         title: '课程编号',
         dataIndex: 'course_id',
         key: 'course_id',
-        width: '15%',
+        width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -326,7 +322,7 @@ class RecordTableForm extends PureComponent {
         title: '姓名',
         dataIndex: 'sname',
         key: 'sname',
-        width: '15%',
+        width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -345,7 +341,7 @@ class RecordTableForm extends PureComponent {
         title: '课程名称',
         dataIndex: 'cname',
         key: 'cname',
-        width: '15%',
+        width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -361,37 +357,18 @@ class RecordTableForm extends PureComponent {
         },
       },
       {
-        title: '选课日期',
-        dataIndex: 'select_year',
-        key: 'select_year',
-        width: '15%',
-        render: (text, record) => {
-          if (record.editable) {
-            return (
-              <Input
-              defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'select_year', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="选课日期"
-              />
-            );
-          }
-          return text;
-        },
-      },
-      {
         title: '分数',
         dataIndex: 'scores',
         key: 'scores',
-        width: '15%',
+        width: '18%',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
               defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'select_year', record.rid)}
+                onChange={e => this.handleFieldChange(e, 'scores', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="选课日期"
+                placeholder="分数"
               />
             );
           }
@@ -468,4 +445,4 @@ class RecordTableForm extends PureComponent {
 }
 
 
-export default RecordTableForm;
+export default ScoreTableForm;

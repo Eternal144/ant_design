@@ -48,16 +48,10 @@ export default [
         icon: 'form',
         name: 'form',
         routes: [
-          //这个是添加表单
-          // {
-          //   path: '/score/info',
-          //   name: 'basicform',
-          //   component: './Forms/BasicForm',
-          // },
           {
             path: '/score/info',
             name: 'basicform',
-            component: './List/TableList',
+            component: './Forms/Score/ScoreForm',
           },
             // hideChildrenInMenu: true,
             // routes: [

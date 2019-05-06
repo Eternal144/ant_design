@@ -319,7 +319,7 @@ class StudentTableForm extends PureComponent {
                 defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'classroom', record.sid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="性别"
+                placeholder="班级"
               />
               </div>
             );
