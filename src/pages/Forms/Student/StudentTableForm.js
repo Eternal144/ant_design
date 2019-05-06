@@ -291,6 +291,7 @@ class StudentTableForm extends PureComponent {
         width: '12%',
         render: (text, record) => {
           if (record.editable) {
+            
             return (
               <div>
               <Input

@@ -4,8 +4,7 @@ import {
   Col,
   Table,
   Select,
-  Form, Button, Input, message, Popconfirm, Divider
-} from 'antd';
+  Form, Button, Input, message, Popconfirm, Divider} from 'antd';
 import isEqual from 'lodash/isEqual';
  import styles from '../style.less';
 
@@ -23,7 +22,7 @@ const error = (str)=>{
   message.error(str);
 }
 @Form.create()
-class StudentTableForm extends PureComponent {
+class CourseTableForm extends PureComponent {
   index = 0;
   cacheOriginData = {};
 
@@ -89,7 +88,7 @@ class StudentTableForm extends PureComponent {
   remove(key) {
     const { data } = this.state;
     const { onChange } = this.props;
-    const newData = data.filter(item => item.cid !== key)[0];
+    const newData = data.filter(item => item.cid !== key);
     console.log(newData);
     this.setState({ data: newData });
     onChange(newData);
@@ -101,7 +100,7 @@ class StudentTableForm extends PureComponent {
     })
     .then(res=>res.json())
     .then(
-      // success("删除成功")
+       success("删除成功")
     )
     // .error(
     //   error("删除失败")
@@ -138,8 +137,7 @@ class StudentTableForm extends PureComponent {
       //key = cid
       const target = this.getRowByKey(key) || {};
       const {data} = this.state;
-      console.log(target);
-      if (!target.sname || !target.gender || !target.adm_year || !target.adm_age ||!target.student_id) {
+      if (!target.cname || !target.course_id || !target.credit || !target.tname ||!target.cancle_year) {
         message.error('请填写完整成员信息。');
         e.target.focus();
         this.setState({
@@ -151,7 +149,8 @@ class StudentTableForm extends PureComponent {
       delete target.editable
       this.toggleEditable(e, key);
       const { onChange } = this.props;
-      let url = `http://localhost:8080/api/update/student`
+      console.log(target);
+      let url = `http://localhost:8080/api/update/course`
       fetch(url,{
         method:"POST",
         headers:{
@@ -189,12 +188,12 @@ class StudentTableForm extends PureComponent {
     
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      const {studentType,studentInfo} = fieldsValue;
-      if(!studentInfo){
+      const {courseType,courseInfo} = fieldsValue;
+      if(!courseInfo){
         alert("请输入学生的信息")
         return;
       }
-      let url = `http://localhost:8080/api/info/student/?${studentType}=${studentInfo}`
+      let url = `http://localhost:8080/api/info/course/?${courseType}=${courseInfo}`
       fetch(url)
       .then(res=>res.json())
       .then(data=>
@@ -223,11 +222,11 @@ class StudentTableForm extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={4} sm={24}>
           <FormItem label="课程">
-              {getFieldDecorator('CourseType',{
-                initialValue:"name"
+              {getFieldDecorator('courseType',{
+                initialValue:"cname"
               })(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value={"name"}>名称</Option>
+                  <Option value={"cname"}>名称</Option>
                   <Option value={"cid"}>编号</Option>
                 </Select>
               )}
@@ -235,7 +234,7 @@ class StudentTableForm extends PureComponent {
           </Col>
           <Col md={4} sm={24}>
           <FormItem label="">
-              {getFieldDecorator('CourseInfo')(<Input placeholder="请输入查询对象" />)}
+              {getFieldDecorator('courseInfo')(<Input placeholder="请输入查询对象" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -287,7 +286,7 @@ class StudentTableForm extends PureComponent {
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'cname', record.cid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="姓名"
+                placeholder="课程名称"
               />
             );
           }
@@ -442,4 +441,4 @@ class StudentTableForm extends PureComponent {
 }
 
 
-export default StudentTableForm;
+export default CourseTableForm;

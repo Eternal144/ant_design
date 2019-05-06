@@ -53,28 +53,6 @@ class StudentForm extends PureComponent {
     window.removeEventListener('resize', this.resizeFooterToolbar);
   }
 
-  // getErrorInfo = () => {
-  //   const {
-  //     form: { getFieldsError },
-  //   } = this.props;
-  //   const errors = getFieldsError();
-  //   const errorCount = Object.keys(errors).filter(key => errors[key]).length;
-  //   if (!errors || errorCount === 0) {
-  //     return null;
-  //   }
-  //   const scrollToField = fieldKey => {
-  //     const labelNode = document.querySelector(`label[for="${fieldKey}"]`);
-  //     if (labelNode) {
-  //       labelNode.scrollIntoView(true);
-  //     }
-  //   };
-  //   const errorList = Object.keys(errors).map(key => {
-  //     if (!errors[key]) {
-  //       return null;
-  //     }
-  //     return (
-  //       <li key={key} className={styles.errorListItem} onClick={() => scrollToField(key)}>
-
 
   resizeFooterToolbar = () => {
     requestAnimationFrame(() => {

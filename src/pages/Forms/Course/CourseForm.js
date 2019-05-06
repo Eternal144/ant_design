@@ -27,7 +27,7 @@ const { RangePicker } = DatePicker;
   submitting: loading.effects['form/submitAdvancedForm'],
 }))
 @Form.create()
-class StudentForm extends PureComponent {
+class CourseForm extends PureComponent {
   state = {
     width: '100%',
     data: [],
@@ -112,4 +112,4 @@ class StudentForm extends PureComponent {
   }
 }
 
-export default StudentForm;
+export default CourseForm;

@@ -39,7 +39,7 @@ class BasicForms extends PureComponent {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         //console.log(values);
-        fetch("http://localhost:8080/api/insert/student",{
+        fetch("http://localhost:8080/api/insert/course",{
           method:"POST",
           headers:{
             'content-type': 'application/json'
@@ -61,11 +61,12 @@ class BasicForms extends PureComponent {
   handleRefresh=()=>{
     const { form } = this.props;
     form.setFieldsValue({
-      "sname":null,
-      "student_id":null,
-      "gender":null,
-      "adm_age":null,
-      "adm_year":null
+      "cname":null,
+      "course_id":null,
+      "tname":null,
+      "credit":null,
+      "grade":null,
+      "cancle_year":null
     })
   }
   render() {
@@ -95,76 +96,79 @@ class BasicForms extends PureComponent {
 
     return (
       <PageHeaderWrapper
-        title={<FormattedMessage id="app.forms.basic.title" />}
-        content={<FormattedMessage id="app.forms.basic.description" />}
+        title={<FormattedMessage id="课程添加" />}
+        content={<FormattedMessage id="次界面用于添加课程信息" />}
       >
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label={<FormattedMessage id="姓名" />}>
-              {getFieldDecorator('sname', {
+            <FormItem {...formItemLayout} label={<FormattedMessage id="名称" />}>
+              {getFieldDecorator('cname', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: '请输入学生的姓名' }),
+                    message: formatMessage({ id: '请输入课程的名称' }),
                   },
                 ],
-              })(<Input placeholder={formatMessage({ id: '请输入学生的姓名' })} />)}
+              })(<Input placeholder={formatMessage({ id: '请输入课程的名称' })} />)}
             </FormItem>
-            <FormItem {...formItemLayout} label={<FormattedMessage id="学号" />}>
-              {getFieldDecorator('student_id', {
+            <FormItem {...formItemLayout} label={<FormattedMessage id="编号" />}>
+              {getFieldDecorator('course_id', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: '请输入学生的学号' }),
+                    message: formatMessage({ id: '请输入课程的编号' }),
                   },
                 ],
-              })(<Input placeholder={formatMessage({ id: '请输入学生的学号' })} />)}
+              })(<Input placeholder={formatMessage({ id: '请输入课程的编号' })} />)}
             </FormItem>
-            
 
-            <FormItem
-              {...formItemLayout}
-              label={<FormattedMessage id="性别" />}
-            >
-              <div>
-                {getFieldDecorator('gender', {
-                  initialValue: '男',
-                })(
-                  <Radio.Group>
-                    <Radio value={'男'}>
-                      <FormattedMessage id="男" />
-                    </Radio>
-                    <Radio value={'女'}>
-                      <FormattedMessage id="女" />
-                    </Radio>
-                  </Radio.Group>
-                )}
-              </div>
-              </FormItem>
 
-              <FormItem {...formItemLayout} label={<FormattedMessage id="入学年龄" />}>
-              {getFieldDecorator('adm_age', {
+
+            <FormItem {...formItemLayout} label={<FormattedMessage id="任课教师" />}>
+              {getFieldDecorator('tname', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: '请输入学生的入学年龄' }),
-                  },
-                ],
-              })(<Input placeholder={formatMessage({ id: '请输入学生的入学年龄' })} />)}
-            </FormItem>
-
-            <FormItem {...formItemLayout} label={<FormattedMessage id="入学年份" />}>
-              {getFieldDecorator('adm_year', {
-                rules: [
-                  {
-                    required: true,
-                    message: formatMessage({ id: '请输入学生的入学年份' }),
+                    message: formatMessage({ id: '请输入任课老师' }),
                   },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入学生的入学年份' })} />)}
             </FormItem>
 
-            <FormItem
+            <FormItem {...formItemLayout} label={<FormattedMessage id="学分" />}>
+              {getFieldDecorator('credit', {
+                rules: [
+                  {
+                    required: true,
+                    message: formatMessage({ id: '请输入该课的学分' }),
+                  },
+                ],
+              })(<Input placeholder={formatMessage({ id: '请输入该课的学分' })} />)}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label={<FormattedMessage id="选课年纪" />}>
+              {getFieldDecorator('grade', {
+                rules: [
+                  {
+                    required: true,
+                    message: formatMessage({ id: '请输入该课程的选课年纪' }),
+                  },
+                ],
+              })(<Input placeholder={formatMessage({ id: '请输入该课程的选课年纪' })} />)}
+            </FormItem>
+
+            <FormItem {...formItemLayout} label={<FormattedMessage id="取消年份" />}>
+              {getFieldDecorator('cancle_year', {
+                rules: [
+                  {
+                    required: true,
+                    message: formatMessage({ id: '请输入该课的取消年份' }),
+                  },
+                ],
+              })(<Input placeholder={formatMessage({ id: '请输入该课的取消年份' })} />)}
+            </FormItem>
+
+            {/* <FormItem
               {...formItemLayout}
               label={
                 <span>
@@ -179,7 +183,7 @@ class BasicForms extends PureComponent {
               }
             >
                {getFieldDecorator('classroom')(<Input placeholder={formatMessage({ id: '请输入学生分配的班级' })} />)}
-            </FormItem>
+            </FormItem> */}
             
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
