@@ -36,33 +36,6 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-
-const CreateForm = Form.create()(props => {
-  const { modalVisible, form,  handleModalVisible } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-    });
-  };
-  return (
-
-    <Modal
-      destroyOnClose
-      title="新建规则"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: '请输入至少五个字符的规则描述！', min: 5 }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-    </Modal>
-  );
-});
-
 @connect(({ rule, loading }) => ({
   rule,
   loading: loading.models.rule,
@@ -114,13 +87,6 @@ class TableList extends PureComponent {
             <Fragment>
               <Button type="primary" onClick={this.handleOnsubmitClasses.bind(this,text)} >选课</Button>
             </Fragment>
-            // <Input
-            //   value={text}
-            //   autoFocus
-            //   onChange={e => this.handleFieldChange(e, 'student_id', record.key)}
-            //   onKeyPress={e => this.handleKeyPress(e, record.key)}
-            //   placeholder="学号"
-            // />
           );
       },
     }
@@ -282,7 +248,13 @@ class TableList extends PureComponent {
     this.handleUpdateModalVisible();
   };
 
-
+  handeleClear = ()=>{
+    console.log("进来了")
+    const { form } = this.props;
+    form.setFieldsValue({
+      name:null
+    })
+  }
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
@@ -293,10 +265,12 @@ class TableList extends PureComponent {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={4} sm={24}>
           <FormItem label="查询模式">
-              {getFieldDecorator('status')(
+              {getFieldDecorator('status',{
+                initialValue:"sname"
+              })(
                 <Select placeholder="请选择" style={{ width: '80%' }}>
-                  <Option value="sname">姓名</Option>
-                  <Option value="sid">学号</Option>
+                  <Option value={"sname"}>姓名</Option>
+                  <Option value={"sid"}>学号</Option>
                 </Select>
               )}
             </FormItem>
@@ -313,7 +287,7 @@ class TableList extends PureComponent {
               <Button type="primary" htmlType="submit" onSubmit={this.handleGetList}>
                 查询
               </Button>
-              <Button style={{ marginLeft: 8 }}>
+              <Button style={{ marginLeft: 8 }} onClick={this.handeleClear} >
                 重置
               </Button>
             </span>
@@ -368,14 +342,7 @@ class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm  modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            {...updateMethods}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
-          />
-        ) : null}
+
       </PageHeaderWrapper>
     );
   }

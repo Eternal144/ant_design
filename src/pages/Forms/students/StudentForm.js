@@ -17,7 +17,7 @@ import { connect } from 'dva';
 import styles from '../style.less';
 import FooterToolbar from '@/components/FooterToolbar';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import TableForm from './RecordTableForm';
+import TableForm from './StudentTableForm';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
