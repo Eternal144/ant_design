@@ -172,7 +172,6 @@ class RecordTableForm extends PureComponent {
   }
 
   handleSearch = e => {
-    console.log("yes")
     e.preventDefault();
     const { dispatch, form } = this.props;
     
@@ -240,9 +239,6 @@ class RecordTableForm extends PureComponent {
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
-              {/* <Button style={{ marginLeft: 8 }}>
-                重置
-              </Button> */}
             </span>
           </Col>
         </Row>
@@ -293,7 +289,7 @@ class RecordTableForm extends PureComponent {
               defaultValue={text}
                 autoFocus
                 onChange={e => this.handleFieldChange(e, 'student_id', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="学号"
               />
             );
@@ -313,7 +309,7 @@ class RecordTableForm extends PureComponent {
               <Input
                 defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'course_id', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="课程编号"
               />
               </div>
@@ -333,7 +329,7 @@ class RecordTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'sname', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="姓名"
               />
             );
@@ -352,7 +348,7 @@ class RecordTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'cname', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="课程名称"
               />
             );
@@ -371,7 +367,7 @@ class RecordTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'select_year', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="选课日期"
               />
             );
@@ -390,7 +386,7 @@ class RecordTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'select_year', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="选课日期"
               />
             );

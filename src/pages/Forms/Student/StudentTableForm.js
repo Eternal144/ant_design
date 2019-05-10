@@ -138,6 +138,7 @@ class StudentTableForm extends PureComponent {
       }
       delete target.isNew
       delete target.editable
+      delete target.average
       this.toggleEditable(e, key);
       const { onChange } = this.props;
       let url = `http://localhost:8080/api/update/student`
@@ -248,7 +249,7 @@ class StudentTableForm extends PureComponent {
         title: '学号',
         dataIndex: 'student_id',
         key: 'student_id',
-        width: '15%',
+        width: '12%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -264,12 +265,11 @@ class StudentTableForm extends PureComponent {
           return text;
         },
       },
-
       {
         title: '姓名',
         dataIndex: 'sname',
         key: 'sname',
-        width: '15%',
+        width: '12%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -310,7 +310,7 @@ class StudentTableForm extends PureComponent {
         title: '班级',
         dataIndex: 'classroom',
         key: 'classroom',
-        width: '14%',
+        width: '12%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -340,6 +340,7 @@ class StudentTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'adm_age', record.sid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="课程名称"
+                
               />
             );
           }
@@ -360,6 +361,28 @@ class StudentTableForm extends PureComponent {
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="选课日期"
               />
+            );
+          }
+          return text;
+        },
+      },
+      {
+        title: '平均成绩',
+        dataIndex: 'average',
+        key: 'average',
+        width: '12%',
+        render: (text, record) => {
+          if (record.editable) {
+            return (
+              <div>
+              <Input
+                defaultValue={text}
+                onChange={e => this.handleFieldChange(e, 'average', record.sid)}
+                onKeyPress={e => this.handleKeyPress(e, record.sid)}
+                placeholder="班级"
+                readOnly
+              />
+              </div>
             );
           }
           return text;

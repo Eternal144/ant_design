@@ -32,23 +32,6 @@ class RecordForm extends PureComponent {
     data: [],
   };
 
-  // componentDidMount() {
-  //   window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
-  //   fetch("http://localhost:8080/api/info/allRecord")
-  //   .then(res=>res.json())
-  //   .then(data=>{
-  //     data.forEach(element => {
-  //       element.isNew = false
-  //       element.editable = false
-  //     });
-  //     //console.log(data);
-  //     this.setState({
-  //       data:data
-  //     })
-  //   });
-    
-  // }
-
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeFooterToolbar);
   }

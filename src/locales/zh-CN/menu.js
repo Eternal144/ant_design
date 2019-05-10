@@ -19,6 +19,7 @@ export default {
   'menu.profile': '课程信息',
   'menu.profile.basic': '详细信息', //学生查 删 改
   'menu.profile.advanced': '课程添加',//学生添加
+  'menu.profile.spread': '成绩分布',//学生添加
 
 
 

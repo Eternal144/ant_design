@@ -18,7 +18,7 @@ import styles from '../style.less';
 //import styles from './style.less';
 import FooterToolbar from '@/components/FooterToolbar';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import TableForm from './StudentTableForm';
+import CourseAnalysisForm from './CourseAnalysisForm';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -27,7 +27,7 @@ const { RangePicker } = DatePicker;
   submitting: loading.effects['form/submitAdvancedForm'],
 }))
 @Form.create()
-class StudentForm extends PureComponent {
+class CourseForm extends PureComponent {
   state = {
     width: '100%',
     data: [],
@@ -35,7 +35,7 @@ class StudentForm extends PureComponent {
 
   componentDidMount() {
     window.addEventListener('resize', this.resizeFooterToolbar, { passive: true });
-    fetch("http://localhost:8080/api/info/allStudent")
+    fetch("http://localhost:8080/api/info/allCourse")
     .then(res=>res.json())
     .then(data=>{
       data.forEach(element => {
@@ -52,6 +52,7 @@ class StudentForm extends PureComponent {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeFooterToolbar);
   }
+
 
 
   resizeFooterToolbar = () => {
@@ -76,18 +77,18 @@ class StudentForm extends PureComponent {
 
     return (
       <PageHeaderWrapper
-        title="个人信息"
-        content="天津大学本科生个人信息记录"
+        title="课程信息"
+        content="天津大学课程信息记录"
         wrapperClassName={styles.advancedForm}
       >
-        <Card title="学生管理" bordered={false}>
+        <Card title="课程成绩分布" bordered={false}>
           {getFieldDecorator('members', {
             initialValue: this.state.data,
-          })(<TableForm />)}
+          })(<CourseAnalysisForm />)}
         </Card>
       </PageHeaderWrapper>
     );
   }
 }
 
-export default StudentForm;
+export default CourseForm;

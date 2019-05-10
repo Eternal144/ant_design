@@ -265,7 +265,7 @@ class TableList extends PureComponent {
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={4} sm={24}>
+          <Col md={6} sm={24}>
           <FormItem label="查询模式">
               {getFieldDecorator('status',{
                 initialValue:"sname"
