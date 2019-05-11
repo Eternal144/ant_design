@@ -38,7 +38,6 @@ class BasicForms extends PureComponent {
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        //console.log(values);
         fetch("http://localhost:8080/api/insert/student",{
           method:"POST",
           headers:{
@@ -48,13 +47,9 @@ class BasicForms extends PureComponent {
         })
         .then(res=>res.json())
         .then(data=>{
-          success()
-          
+          success(data.message)
+          this.handleRefresh();
         })
-        .error(
-          error()
-        )
-
       }
     });
   };
@@ -65,7 +60,8 @@ class BasicForms extends PureComponent {
       "student_id":null,
       "gender":null,
       "adm_age":null,
-      "adm_year":null
+      "adm_year":null,
+      "classroom":null
     })
   }
   render() {
@@ -171,7 +167,7 @@ class BasicForms extends PureComponent {
                   <FormattedMessage id="班级" />
                   <em className={styles.optional}>
                     <FormattedMessage id="form.optional" />
-                    <Tooltip title={<FormattedMessage id="form.client.label.tooltip" />}>
+                    <Tooltip title={<FormattedMessage id="后期添加" />}>
                       <Icon type="info-circle-o" style={{ marginRight: 4 }} />
                     </Tooltip>
                   </em>

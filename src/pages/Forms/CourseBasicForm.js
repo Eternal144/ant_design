@@ -33,12 +33,10 @@ const error = ()=>{
 @Form.create()
 class BasicForms extends PureComponent {
   handleSubmit = e => {
-    //在这里添加
     const { dispatch, form } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        //console.log(values);
         fetch("http://localhost:8080/api/insert/course",{
           method:"POST",
           headers:{
@@ -48,13 +46,9 @@ class BasicForms extends PureComponent {
         })
         .then(res=>res.json())
         .then(data=>{
-          success()
-          
+          success(data.message)
+          this.handleRefresh();
         })
-        .error(
-          error()
-        )
-
       }
     });
   };
@@ -166,25 +160,7 @@ class BasicForms extends PureComponent {
                   },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入该课的取消年份' })} />)}
-            </FormItem>
-
-            {/* <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  <FormattedMessage id="班级" />
-                  <em className={styles.optional}>
-                    <FormattedMessage id="form.optional" />
-                    <Tooltip title={<FormattedMessage id="form.client.label.tooltip" />}>
-                      <Icon type="info-circle-o" style={{ marginRight: 4 }} />
-                    </Tooltip>
-                  </em>
-                </span>
-              }
-            >
-               {getFieldDecorator('classroom')(<Input placeholder={formatMessage({ id: '请输入学生分配的班级' })} />)}
-            </FormItem> */}
-            
+            </FormItem>        
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
                 <FormattedMessage id="form.submit" />

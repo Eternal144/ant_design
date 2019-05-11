@@ -38,6 +38,7 @@ class StudentForm extends PureComponent {
     fetch("http://localhost:8080/api/info/allStudent")
     .then(res=>res.json())
     .then(data=>{
+      data = data.data;
       data.forEach(element => {
         element.isNew = false
         element.editable = false

@@ -69,29 +69,27 @@ class CourseTableForm extends PureComponent {
     }
   };
 
-  newMember = () => {
-    const { data } = this.state;
-    const newData = data.map(item => ({ ...item }));
-    newData.push({
-      key: `NEW_TEMP_ID_${this.index}`,
-      workId: '',
-      name: '',
-      department: '',
-      editable: true,
-      isNew: true,
-    });
-    console.log(newData);
-    this.index += 1;
-    this.setState({ data: newData });
-  };
+  // newMember = () => {
+  //   const { data } = this.state;
+  //   const newData = data.map(item => ({ ...item }));
+  //   newData.push({
+  //     key: `NEW_TEMP_ID_${this.index}`,
+  //     workId: '',
+  //     name: '',
+  //     department: '',
+  //     editable: true,
+  //     isNew: true,
+  //   });
+  //   console.log(newData);
+  //   this.index += 1;
+  //   this.setState({ data: newData });
+  // };
 
   remove(key) {
     const { data } = this.state;
     const { onChange } = this.props;
     const newData = data.filter(item => item.cid !== key);
-    console.log(newData);
     this.setState({ data: newData });
-    onChange(newData);
     fetch(`http://localhost:8080/api/delete/course?cid=${key}`,{
       method:"DELETE",
       headers:{
@@ -99,12 +97,12 @@ class CourseTableForm extends PureComponent {
       }, 
     })
     .then(res=>res.json())
-    .then(
-       success("删除成功")
+    .then(data=>{
+      onChange(newData);
+      success(data.message)
+    }
     )
-    // .error(
-    //   error("删除失败")
-    // )
+
   }
 
   handleKeyPress(e, key) {
@@ -159,7 +157,9 @@ class CourseTableForm extends PureComponent {
         body:JSON.stringify(target)
       })
       .then(res=>res.json())
-      .then(data=>console.log(data))
+      .then(data=>
+        success(data.message)
+        )
       onChange(data);
       this.setState({
         loading: false,
@@ -265,7 +265,7 @@ class CourseTableForm extends PureComponent {
               defaultValue={text}
                 autoFocus
                 onChange={e => this.handleFieldChange(e, 'course_id', record.cid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.cid)}
                 placeholder="课程编号"
               />
             );
@@ -285,7 +285,7 @@ class CourseTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'cname', record.cid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.cid)}
                 placeholder="课程名称"
               />
             );
@@ -305,7 +305,7 @@ class CourseTableForm extends PureComponent {
               <Input
                 defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'tname', record.cid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.cid)}
                 placeholder="任课老师"
               />
               </div>
@@ -325,7 +325,7 @@ class CourseTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'credit', record.cid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.cid)}
                 placeholder="学分"
               />
             );
@@ -334,7 +334,7 @@ class CourseTableForm extends PureComponent {
         },
       },
       {
-        title: '可选年纪',
+        title: '可选年级',
         dataIndex: 'grade',
         key: 'grade',
         width: '14%',
@@ -344,8 +344,8 @@ class CourseTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'grade', record.cid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="可选年纪"
+                onKeyPress={e => this.handleKeyPress(e, record.cid)}
+                placeholder="可选年级"
               />
             );
           }
@@ -363,7 +363,7 @@ class CourseTableForm extends PureComponent {
               <Input
               defaultValue={text}
                 onChange={e => this.handleFieldChange(e, 'cancle_year', record.cid)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
+                onKeyPress={e => this.handleKeyPress(e, record.cid)}
                 placeholder="取消年份"
               />
             );
@@ -427,14 +427,14 @@ class CourseTableForm extends PureComponent {
           pagination={false}
           rowClassName={record => (record.editable ? styles.editable : '')}
         />
-        <Button
+        {/* <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
           type="dashed"
           onClick={this.newMember}
           icon="plus"
         >
           新增成员
-        </Button>
+        </Button> */}
       </Fragment>
     );
   }

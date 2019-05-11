@@ -13,6 +13,14 @@ import component from '@/locales/zh-CN/component';
 import StudentForm from './StudentForm';
 import { puts } from 'util';
 
+const success = (str)=>{
+  message.success(str);
+}
+const error = (str)=>{
+  message.error(str);
+}
+
+
 const FormItem = Form.Item;
 const { Option } = Select;
 
@@ -83,18 +91,19 @@ class StudentTableForm extends PureComponent {
     const { data } = this.state;
     const { onChange } = this.props;
     const newData = data.filter(item => item.sid !== key);
+    console.log(key);
     this.setState({ data: newData });
-    onChange(newData);
-    fetch(`http://localhost:8080/api/delete/record?sid=${key}`,{
+    fetch(`http://localhost:8080/api/delete/student?sid=${key}`,{
       method:"DELETE",
       headers:{
         'content-type': 'application/json'
-      },
-      
+      }, 
     })
     .then(res=>res.json())
     .then(data=>{
+      success(data.message)
     });
+    onChange(newData);
   }
 
   handleKeyPress(e, key) {
@@ -150,7 +159,7 @@ class StudentTableForm extends PureComponent {
         body:JSON.stringify(target)
       })
       .then(res=>res.json())
-      .then(data=>console.log(data))
+      .then(data=>success(data.message))
       onChange(data);
       this.setState({
         loading: false,
@@ -174,7 +183,6 @@ class StudentTableForm extends PureComponent {
   }
  
   handleSearch = e => {
-    console.log("yes")
     e.preventDefault();
     const { dispatch, form } = this.props;
     
@@ -190,12 +198,22 @@ class StudentTableForm extends PureComponent {
       .then(res=>res.json())
       .then(data=>
         this.setState({
-          data:data
+          data:data.data
         })
       )
         })
 }
-
+handleAllStudents = ()=>{
+  let url = `http://localhost:8080/api/info/allStudent`;
+  fetch(url)
+  .then(res=>res.json())
+  .then(data=>{
+    this.setState({
+      data:data.data
+    })
+  }
+  )
+}
   handeleClear = ()=>{
     const { form } = this.props;
     form.setFieldsValue({
@@ -203,6 +221,7 @@ class StudentTableForm extends PureComponent {
       courseInfo:null
     })
   }
+
 
   renderQuery() {
     const {
@@ -235,10 +254,14 @@ class StudentTableForm extends PureComponent {
                 查询
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handeleClear}>
-                重置全部
+                重置
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleAllStudents}>
+                显示全部
               </Button>
             </span>
           </Col>
+
         </Row>
       </Form>
     );
@@ -367,28 +390,6 @@ class StudentTableForm extends PureComponent {
         },
       },
       {
-        title: '平均成绩',
-        dataIndex: 'average',
-        key: 'average',
-        width: '12%',
-        render: (text, record) => {
-          if (record.editable) {
-            return (
-              <div>
-              <Input
-                defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'average', record.sid)}
-                onKeyPress={e => this.handleKeyPress(e, record.sid)}
-                placeholder="班级"
-                readOnly
-              />
-              </div>
-            );
-          }
-          return text;
-        },
-      },
-      {
         title: '操作',
         key: 'action',
         render: (text, record) => {
@@ -444,14 +445,6 @@ class StudentTableForm extends PureComponent {
           pagination={false}
           rowClassName={record => (record.editable ? styles.editable : '')}
         />
-        <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="dashed"
-          onClick={this.newMember}
-          icon="plus"
-        >
-          新增成员
-        </Button>
       </Fragment>
     );
   }

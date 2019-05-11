@@ -27,11 +27,20 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './TableList.less';
 
+
 const FormItem = Form.Item;
-const { Step } = Steps;
+// const { Step } = Steps;
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
+const success = (str)=>{
+  message.success(str);
+}
+const error = (str)=>{
+  message.error(str);
+}
+
+
 const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
@@ -40,7 +49,6 @@ const getValue = obj =>
   rule,
   loading: loading.models.rule,
 }))
-
 @Form.create()
 class TableList extends PureComponent {
   state = {
@@ -91,12 +99,14 @@ class TableList extends PureComponent {
       },
     }
   ];
-  
+  //只有查询才会显示可选数据
   handleOnsubmitClasses(dom){
-    const {fieldsValue} = this.state;
+
+    const {fieldsValue,data} = this.state;
     let temp = {};
     temp[fieldsValue.status] = fieldsValue.name;
     let obj = Object.assign({},dom,temp);
+    console.log(obj);
     obj.select_year = new Date().getFullYear();
     let url = `http://localhost:8080/api/insert/record`
     fetch(url,{
@@ -107,29 +117,29 @@ class TableList extends PureComponent {
       body: JSON.stringify(obj)
     })
     .then(res=>res.json())
-    .then(data=>{
-      console.log(data);
+    .then(res=>{
+      success(res.message);
+      const newObj = {
+        list:null,
+        pagination:null
+      }
+      const newData = data.list.filter((item)=>{
+        console.log(item);
+        console.log(dom);
+        return item.cid !== dom.cid;
+        })
+      console.log(newData);
+       newObj.list = newData;
+       newData.pagination = {
+          total:newData.length,
+          pageSize:newData.length,
+          current:1
+        }
+        this.setState({
+          data:newObj
+        })
     })
   }
-
-  // componentDidMount() {
-  //   let url = `http://localhost:8080/api/fit/course/?sname=eternal`;
-  //   fetch(url)
-  //   .then(res=>res.json())
-  //   .then(data=>{
-  //     const obj = {
-  //       list:data,
-  //       pagination:{
-  //         total:data.length,
-  //         pageSize:data.length,
-  //         current:1
-  //       }
-  //     }
-  //     this.setState({
-  //       data:obj
-  //     })
-  //   })
-  // }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     const { dispatch } = this.props;
@@ -193,7 +203,6 @@ class TableList extends PureComponent {
 
   handleSearch = e => {
     e.preventDefault();
-
     const { dispatch, form } = this.props;
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -203,14 +212,13 @@ class TableList extends PureComponent {
       .then(res=>res.json())
       .then(data=>{
         const obj = {
-          list:data,
+          list:data.data,
           pagination:{
             total:data.length,
             pageSize:data.length,
             current:1
           }
         }
-        console.log(data);
         this.setState({
           data:obj,
           fieldsValue:fieldsValue

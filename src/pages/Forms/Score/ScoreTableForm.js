@@ -13,6 +13,13 @@ import component from '@/locales/zh-CN/component';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const success = (str)=>{
+  message.success(str);
+}
+const error = (str)=>{
+  message.error(str);
+}
+
 
 @Form.create()
 class ScoreTableForm extends PureComponent {
@@ -26,6 +33,7 @@ class ScoreTableForm extends PureComponent {
       loading: false,
       /* eslint-disable-next-line react/no-unused-state */
       value: props.value,
+      average:null
     };
     //console.log(this.props)
   }
@@ -93,6 +101,7 @@ class ScoreTableForm extends PureComponent {
     })
     .then(res=>res.json())
     .then(data=>{
+      success(data.message);
     });
   }
 
@@ -132,11 +141,24 @@ class ScoreTableForm extends PureComponent {
         });
         return;
       }
-
-      delete target.isNew;
       this.toggleEditable(e, key);
+      delete target.isNew;
+      delete target.editable
       const { data } = this.state;
       const { onChange } = this.props;
+      let url = `Http://localhost:8080/api/update/record`;
+      fetch(url,{
+        method:"POST",
+        headers:{
+          'content-type': 'application/json'
+        },
+        body:JSON.stringify(target)
+      })
+      .then(res=>res.json())
+      .then(data=>{
+        success(data.message)
+        console.log(data);
+      })
       onChange(data);
       this.setState({
         loading: false,
@@ -161,17 +183,48 @@ class ScoreTableForm extends PureComponent {
  
   handleFetch = (str,type,info)=>{
     let url = `http://localhost:8080${str}?${type}=${info}`;
+    console.log(url);
       fetch(url)
       .then(res=>res.json())
       .then(data=>{
-        console.log(data);
-        this.setState({
-          data:data
-        })
+        data = data.data;
+        console.log(type)
+        console.log(type === 'cname')
+        console.log(data)
+        //获取到学生的成绩信息。再单独获取一次平均成绩.data是个数组。可能为空
+        if(type === 'sname' && data){
+          let url = `http://localhost:8080/api/average/student?sid=${data[0].sid}`
+          fetch(url)
+          .then(res=>res.json())
+          .then(res=>{
+            this.setState({
+              data:data,
+              average:res.data[0].average
+            })
+          })
+        }else if(type === 'cname' && data[0]){
+          console.log("进来")
+          let url = `http://localhost:8080/api/average/course?cid=${data[0].cid}`
+          fetch(url)
+          .then(res=>res.json())
+          .then(res=>{
+            console.log(res);
+            this.setState({
+              data:data,
+              average:res.data[0].average
+            })
+          })
+        }else{
+          error("查询数据为空，请重新输入")
+        }
+
       })
   }
 
   handleSearch = e => {
+    this.setState({
+      average:null
+    })
     e.preventDefault();
     const { dispatch, form } = this.props;
     
@@ -185,18 +238,20 @@ class ScoreTableForm extends PureComponent {
       //如果两个信息都有,查某个学生某个课的/
       if(studentInfo && courseInfo){
         let url = `http://localhost:8080/api/info/grade/?${studentType}=${studentInfo}&${courseType}=${courseInfo}`
-        console.log(url);
         fetch(url)
         .then(res=>res.json())
-        .then(data=>
+        .then(data=>{
+          console.log(data)
           this.setState({
-            data:data
+            data:data.data
           })
+          return;
+        }
           )
-      }else if(studentInfo){
+      }else if(studentInfo){//如果只查询学生成绩信息。还应该显示平均成绩
         this.handleFetch('/api/info/allStudentScores',studentType,studentInfo)
       }else{
-        this.handleFetch('/api/info/allSCourseScores',courseType,courseInfo)
+        this.handleFetch('/api/info/allCourseScores',courseType,courseInfo)
       }
     })
   };
@@ -207,6 +262,16 @@ class ScoreTableForm extends PureComponent {
       studentInfo:null,
       courseInfo:null
     })
+  }
+  renderAverage = ()=>{
+    const {average} = this.state;
+    if(average){
+      return  <h3 style={{ width: '100%', marginTop: 16,marginLeft: 8, marginBottom: 8 }}>平均成绩:{average}</h3>
+    }else{
+      return;
+    }
+   
+
   }
 
   renderQuery() {
@@ -275,6 +340,7 @@ class ScoreTableForm extends PureComponent {
       </Form>
     );
   }
+
   render() {
     const columns = [
       {
@@ -291,6 +357,7 @@ class ScoreTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'student_id', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="学号"
+                readOnly
               />
             );
           }
@@ -311,6 +378,7 @@ class ScoreTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'course_id', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="课程编号"
+                readOnly
               />
               </div>
             );
@@ -331,6 +399,7 @@ class ScoreTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'sname', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="姓名"
+                readOnly
               />
             );
           }
@@ -350,6 +419,7 @@ class ScoreTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'cname', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="课程名称"
+                readOnly
               />
             );
           }
@@ -369,6 +439,7 @@ class ScoreTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'scores', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="分数"
+                
               />
             );
           }
@@ -431,14 +502,7 @@ class ScoreTableForm extends PureComponent {
           pagination={false}
           rowClassName={record => (record.editable ? styles.editable : '')}
         />
-        <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="dashed"
-          onClick={this.newMember}
-          icon="plus"
-        >
-          新增成员
-        </Button>
+        <div>{this.renderAverage()}</div>
       </Fragment>
     );
   }

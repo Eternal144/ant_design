@@ -37,11 +37,13 @@ class RecordForm extends PureComponent {
     fetch("http://localhost:8080/api/info/allRecord")
     .then(res=>res.json())
     .then(data=>{
+      data = data.data;
+      console.log(data);
       data.forEach(element => {
         element.isNew = false
         element.editable = false
       });
-      //console.log(data);
+     
       this.setState({
         data:data
       })

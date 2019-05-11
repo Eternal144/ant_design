@@ -15,7 +15,6 @@ import {
 
 import { connect } from 'dva';
 import styles from '../style.less';
-//import styles from './style.less';
 import FooterToolbar from '@/components/FooterToolbar';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import TableForm from './CourseTableForm';
@@ -38,6 +37,7 @@ class CourseForm extends PureComponent {
     fetch("http://localhost:8080/api/info/allCourse")
     .then(res=>res.json())
     .then(data=>{
+      data = data.data
       data.forEach(element => {
         element.isNew = false
         element.editable = false
@@ -52,28 +52,6 @@ class CourseForm extends PureComponent {
   componentWillUnmount() {
     window.removeEventListener('resize', this.resizeFooterToolbar);
   }
-
-  // getErrorInfo = () => {
-  //   const {
-  //     form: { getFieldsError },
-  //   } = this.props;
-  //   const errors = getFieldsError();
-  //   const errorCount = Object.keys(errors).filter(key => errors[key]).length;
-  //   if (!errors || errorCount === 0) {
-  //     return null;
-  //   }
-  //   const scrollToField = fieldKey => {
-  //     const labelNode = document.querySelector(`label[for="${fieldKey}"]`);
-  //     if (labelNode) {
-  //       labelNode.scrollIntoView(true);
-  //     }
-  //   };
-  //   const errorList = Object.keys(errors).map(key => {
-  //     if (!errors[key]) {
-  //       return null;
-  //     }
-  //     return (
-  //       <li key={key} className={styles.errorListItem} onClick={() => scrollToField(key)}>
 
 
   resizeFooterToolbar = () => {
@@ -102,7 +80,7 @@ class CourseForm extends PureComponent {
         content="天津大学课程信息记录"
         wrapperClassName={styles.advancedForm}
       >
-        <Card title="成员管理" bordered={false}>
+        <Card title="课程管理" bordered={false}>
           {getFieldDecorator('members', {
             initialValue: this.state.data,
           })(<TableForm />)}

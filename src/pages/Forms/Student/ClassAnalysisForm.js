@@ -11,11 +11,10 @@ import styles from '../style.less';
 
 import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import { getTimeDistance } from '@/utils/utils';
-// import styles1 from './Analysis.less';
 
 import PageLoading from '@/components/PageLoading';
 import { getFileItem } from 'antd/lib/upload/utils';
-import CourseForm from './CourseForm';
+import ClassForm from './ClassAnalysis';
 import { puts } from 'util';
 
 const FormItem = Form.Item;
@@ -34,7 +33,7 @@ const SalesCard = React.lazy(() => import('./SalesCard'));
     loading: loading.effects['chart/fetch'],
   }))
 @Form.create()
-class CourseAnalysisForm extends PureComponent {
+class ClassAnalysisForm extends PureComponent {
   index = 0;
   cacheOriginData = {};
 
@@ -45,7 +44,6 @@ class CourseAnalysisForm extends PureComponent {
       loading: false,
       value: props.value,
       tableData:[],
-
       rangePickerValue: getTimeDistance('year'),
     };
   }
@@ -65,27 +63,32 @@ class CourseAnalysisForm extends PureComponent {
     
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      const {courseName} = fieldsValue;
-      if(!courseInfo){
-        alert("请输入学生的信息")
+      const {gradeInfo} = fieldsValue;
+      if(!gradeInfo){
+        error("请输入学生的信息")
         return;
       }
-      let url = `http://localhost:8080/api/info/course/?${courseType}=${courseInfo}`
+      let url = `http://localhost:8080/api/average/class?grade=${gradeInfo}`
       fetch(url)
       .then(res=>res.json())
-      .then(data=>
+      .then(data=>{
+        data = data.data
+        data.map(item=>{
+          item.x = item.classroom + '班'
+          item.y = item.average
+        })
         this.setState({
-          data:data
+          tableData:data
         })
+      }
       )
-        })
+    })
 }
 
   handeleClear = ()=>{
     const { form } = this.props;
     form.setFieldsValue({
-      studentInfo:null,
-      courseInfo:null
+      gradeInfo:null,
     })
   }
 
@@ -98,8 +101,8 @@ class CourseAnalysisForm extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}> 
           <Col md={6} sm={24}>
-          <FormItem label="课程">
-              {getFieldDecorator('courseName')(<Input placeholder="请输入查询课程名称" />)}
+          <FormItem label="年级">
+              {getFieldDecorator('gradeInfo')(<Input placeholder="请输入查询年级" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -118,22 +121,21 @@ class CourseAnalysisForm extends PureComponent {
   }
 
   componentDidMount() {
-    fetch("http://localhost:8080/api/average/allCourse")
+    fetch(`http://localhost:8080/api/average/class?grade=${2}`)
     .then(res=>res.json())
     .then(data=>{
       data = data.data
-        data.map( item => {
-            item.x = item.cname;
-            item.y = item.average;
-            delete item.cname;
-            delete item.average;
-        })
-        console.log(data);
+      data.map(item=>{
+        item.x = item.classroom + '班'
+        item.y = item.average
+      })
+
         this.setState({
             tableData:data,
         })
     })
   }
+
 
   isActive = type => {
     const { rangePickerValue } = this.state;
@@ -153,12 +155,6 @@ class CourseAnalysisForm extends PureComponent {
   render() {
     const { rangePickerValue, salesType, currentTabKey } = this.state;
     const { chart, loading } = this.props;
-    console.log(chart);
-    const {
-      salesData,
-    //   searchData,
-    } = chart;
- 
     return (
       <Fragment>
         <div className={styles.tableList}>
@@ -168,12 +164,9 @@ class CourseAnalysisForm extends PureComponent {
         <GridContent>
         <Suspense fallback={null}>
           <SalesCard
-            //rangePickerValue={rangePickerValue}
             salesData={this.state.tableData}
             isActive={this.isActive}
-            handleRangePickerChange={this.handleRangePickerChange}
             loading={loading}
-            selectDate={this.selectDate}
           />
         </Suspense>
       </GridContent>
@@ -183,4 +176,4 @@ class CourseAnalysisForm extends PureComponent {
 }
 
 
-export default CourseAnalysisForm;
+export default ClassAnalysisForm;

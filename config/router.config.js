@@ -57,7 +57,7 @@ export default [
             path: '/score/addinfo',
             name: 'advancedform',
             authority: ['admin'],
-            component: './Dashboard/Analysis',
+            component: './Forms/Student/ClassAnalysis',
           },
         ],
       },

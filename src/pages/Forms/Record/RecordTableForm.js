@@ -13,6 +13,13 @@ import component from '@/locales/zh-CN/component';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const success = (str)=>{
+  message.success(str);
+}
+const error = (str)=>{
+  message.error(str);
+}
+
 
 @Form.create()
 class RecordTableForm extends PureComponent {
@@ -93,6 +100,7 @@ class RecordTableForm extends PureComponent {
     })
     .then(res=>res.json())
     .then(data=>{
+      success(data.message)
     });
   }
 
@@ -111,7 +119,7 @@ class RecordTableForm extends PureComponent {
       this.setState({ data: newData });
     }
   }
-
+//没有对修改做出反应
   saveRow(e, key) {
     e.persist();
     this.setState({
@@ -132,7 +140,6 @@ class RecordTableForm extends PureComponent {
         });
         return;
       }
-
       delete target.isNew;
       this.toggleEditable(e, key);
       const { data } = this.state;
@@ -166,7 +173,7 @@ class RecordTableForm extends PureComponent {
       .then(data=>{
         console.log(data);
         this.setState({
-          data:data
+          data:data.data
         })
       })
   }
@@ -174,7 +181,6 @@ class RecordTableForm extends PureComponent {
   handleSearch = e => {
     e.preventDefault();
     const { dispatch, form } = this.props;
-    
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const {studentType,studentInfo,courseType,courseInfo} = fieldsValue;
@@ -182,6 +188,7 @@ class RecordTableForm extends PureComponent {
         alert("请输入学生或者课程的信息")
         return;
       }
+
       //如果两个信息都有,查某个学生某个课的/
       if(studentInfo && courseInfo){
         let url = `http://localhost:8080/api/info/grade/?${studentType}=${studentInfo}&${courseType}=${courseInfo}`
@@ -190,7 +197,7 @@ class RecordTableForm extends PureComponent {
         .then(res=>res.json())
         .then(data=>
           this.setState({
-            data:data
+            data:data.data
           })
           )
       }else if(studentInfo){
@@ -200,7 +207,19 @@ class RecordTableForm extends PureComponent {
       }
     })
   };
-
+  handleAllRecords = e =>{
+    console.log("all")
+    let url = `http://localhost:8080/api/info/allRecord`;
+    fetch(url)
+    .then(res=>res.json())
+    .then(data=>{
+      console.log(data);
+      this.setState({
+        data:data.data
+      })
+    }
+    )
+  }
   handeleClear = ()=>{
     const { form } = this.props;
     form.setFieldsValue({
@@ -267,7 +286,10 @@ class RecordTableForm extends PureComponent {
                 查询
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={this.handeleClear}>
-                重置全部
+                重置
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={this.handleAllRecords}>
+                查看全部
               </Button>
             </span>
           </Col>
@@ -281,7 +303,7 @@ class RecordTableForm extends PureComponent {
         title: '学号',
         dataIndex: 'student_id',
         key: 'student_id',
-        width: '15%',
+        width: '16%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -301,7 +323,7 @@ class RecordTableForm extends PureComponent {
         title: '课程编号',
         dataIndex: 'course_id',
         key: 'course_id',
-        width: '15%',
+        width: '16%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -322,7 +344,7 @@ class RecordTableForm extends PureComponent {
         title: '姓名',
         dataIndex: 'sname',
         key: 'sname',
-        width: '15%',
+        width: '16%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -341,7 +363,7 @@ class RecordTableForm extends PureComponent {
         title: '课程名称',
         dataIndex: 'cname',
         key: 'cname',
-        width: '15%',
+        width: '16%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -360,26 +382,7 @@ class RecordTableForm extends PureComponent {
         title: '选课日期',
         dataIndex: 'select_year',
         key: 'select_year',
-        width: '15%',
-        render: (text, record) => {
-          if (record.editable) {
-            return (
-              <Input
-              defaultValue={text}
-                onChange={e => this.handleFieldChange(e, 'select_year', record.rid)}
-                onKeyPress={e => this.handleKeyPress(e, record.rid)}
-                placeholder="选课日期"
-              />
-            );
-          }
-          return text;
-        },
-      },
-      {
-        title: '分数',
-        dataIndex: 'scores',
-        key: 'scores',
-        width: '15%',
+        width: '16%',
         render: (text, record) => {
           if (record.editable) {
             return (
@@ -424,8 +427,8 @@ class RecordTableForm extends PureComponent {
           }
           return (
             <span>
-              <a onClick={e=>this.toggleEditable(e, record.rid)}>编辑</a>
-              <Divider type="vertical" />
+              {/* <a onClick={e=>this.toggleEditable(e, record.rid)}>编辑</a> */}
+              {/* <Divider type="vertical" /> */}
               <Popconfirm title="是否要删除此行？" onConfirm={() => this.remove(record.rid)}>
                 <a>删除</a>
               </Popconfirm>
@@ -450,14 +453,6 @@ class RecordTableForm extends PureComponent {
           pagination={false}
           rowClassName={record => (record.editable ? styles.editable : '')}
         />
-        <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="dashed"
-          onClick={this.newMember}
-          icon="plus"
-        >
-          新增成员
-        </Button>
       </Fragment>
     );
   }

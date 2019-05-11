@@ -18,7 +18,7 @@ import styles from '../style.less';
 //import styles from './style.less';
 import FooterToolbar from '@/components/FooterToolbar';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import CourseAnalysisForm from './CourseAnalysisForm';
+import ClassAnalysisForm from './ClassAnalysisForm';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -27,7 +27,7 @@ const { RangePicker } = DatePicker;
   submitting: loading.effects['form/submitAdvancedForm'],
 }))
 @Form.create()
-class CourseForm extends PureComponent {
+class ClassForm extends PureComponent {
   state = {
     width: '100%',
     data: [],
@@ -82,14 +82,14 @@ class CourseForm extends PureComponent {
         content="天津大学课程信息记录"
         wrapperClassName={styles.advancedForm}
       >
-        <Card title="课程成绩分布" bordered={false}>
+        <Card title="班级成绩分布" bordered={false}>
           {getFieldDecorator('members', {
             initialValue: this.state.data,
-          })(<CourseAnalysisForm />)}
+          })(<ClassAnalysisForm />)}
         </Card>
       </PageHeaderWrapper>
     );
   }
 }
 
-export default CourseForm;
+export default ClassForm;
