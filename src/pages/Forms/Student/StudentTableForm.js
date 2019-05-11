@@ -159,7 +159,13 @@ class StudentTableForm extends PureComponent {
         body:JSON.stringify(target)
       })
       .then(res=>res.json())
-      .then(data=>success(data.message))
+      .then(data=>{
+        if (data.code != 200) {
+          error(data.message)
+        } else {
+          success(data.message)
+        }
+      })
       onChange(data);
       this.setState({
         loading: false,
@@ -329,6 +335,7 @@ handleAllStudents = ()=>{
                 onChange={e => this.handleFieldChange(e, 'gender', record.sid)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
                 placeholder="性别"
+                
               />
               </div>
             );

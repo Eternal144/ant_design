@@ -47,8 +47,12 @@ class BasicForms extends PureComponent {
         })
         .then(res=>res.json())
         .then(data=>{
-          success(data.message)
-          this.handleRefresh();
+          if (data.code != 200) {
+            error(data.message)
+          } else {
+            success(data.message)
+            this.handleRefresh();
+          }
         })
       }
     });
