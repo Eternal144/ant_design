@@ -133,12 +133,16 @@ class ScoreTableForm extends PureComponent {
       }
       const target = this.getRowByKey(key) || {};
       console.log(target);
-      if (!target.sname || !target.cname || !target.student_id || !target.course_id) {
+      if (!target.sname || !target.cname || !target.student_id || !target.course_id ) {
         message.error('请填写完整成员信息。');
         e.target.focus();
         this.setState({
           loading: false,
         });
+        return;
+      }
+      if(target.student_id.length> 11){
+        message.error('学号无效');
         return;
       }
       this.toggleEditable(e, key);
@@ -183,32 +187,38 @@ class ScoreTableForm extends PureComponent {
  
   handleFetch = (str,type,info)=>{
     let url = `http://localhost:8080${str}?${type}=${info}`;
-    console.log(url);
       fetch(url)
       .then(res=>res.json())
       .then(data=>{
+        if(data.data.length === 0){
+          error(res.message)
+          return;
+        }
         data = data.data;
-        console.log(type)
-        console.log(type === 'cname')
-        console.log(data)
         //获取到学生的成绩信息。再单独获取一次平均成绩.data是个数组。可能为空
         if(type === 'sname' && data){
           let url = `http://localhost:8080/api/average/student?sid=${data[0].sid}`
           fetch(url)
           .then(res=>res.json())
           .then(res=>{
+            if(res.data.length === 0){
+              error(res.message)
+              return;
+            }
             this.setState({
               data:data,
               average:res.data[0].average
             })
           })
         }else if(type === 'cname' && data[0]){
-          console.log("进来")
           let url = `http://localhost:8080/api/average/course?cid=${data[0].cid}`
           fetch(url)
           .then(res=>res.json())
           .then(res=>{
-            console.log(res);
+            if(res.data.length === 0){
+              error(res.message)
+              return;
+            }
             this.setState({
               data:data,
               average:res.data[0].average

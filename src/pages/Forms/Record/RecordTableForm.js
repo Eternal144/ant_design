@@ -168,10 +168,14 @@ class RecordTableForm extends PureComponent {
  
   handleFetch = (type,info)=>{
     let url = `http://localhost:8080/api/situation/record?${type}=${info}`;
+    console.log(url);
       fetch(url)
       .then(res=>res.json())
       .then(data=>{
-        console.log(data);
+        if(data.data.length == 0){
+          error(data.message)
+          return;
+        }
         this.setState({
           data:data.data
         })
@@ -195,10 +199,15 @@ class RecordTableForm extends PureComponent {
         console.log(url);
         fetch(url)
         .then(res=>res.json())
-        .then(data=>
+        .then(data=>{
+          if(data.data.length == 0){
+            error(data.message)
+            return;
+          }
           this.setState({
             data:data.data
           })
+        }
           )
       }else if(studentInfo){
         this.handleFetch(studentType,studentInfo)
@@ -313,6 +322,7 @@ class RecordTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'student_id', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="学号"
+                readOnly
               />
             );
           }
@@ -333,6 +343,7 @@ class RecordTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'course_id', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="课程编号"
+                readOnly
               />
               </div>
             );
@@ -353,6 +364,7 @@ class RecordTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'sname', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="姓名"
+                readOnly
               />
             );
           }
@@ -372,6 +384,7 @@ class RecordTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'cname', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="课程名称"
+                readOnly
               />
             );
           }
@@ -391,6 +404,7 @@ class RecordTableForm extends PureComponent {
                 onChange={e => this.handleFieldChange(e, 'select_year', record.rid)}
                 onKeyPress={e => this.handleKeyPress(e, record.rid)}
                 placeholder="选课日期"
+                readOnly
               />
             );
           }

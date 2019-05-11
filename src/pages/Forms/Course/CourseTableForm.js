@@ -69,21 +69,6 @@ class CourseTableForm extends PureComponent {
     }
   };
 
-  // newMember = () => {
-  //   const { data } = this.state;
-  //   const newData = data.map(item => ({ ...item }));
-  //   newData.push({
-  //     key: `NEW_TEMP_ID_${this.index}`,
-  //     workId: '',
-  //     name: '',
-  //     department: '',
-  //     editable: true,
-  //     isNew: true,
-  //   });
-  //   console.log(newData);
-  //   this.index += 1;
-  //   this.setState({ data: newData });
-  // };
 
   remove(key) {
     const { data } = this.state;
@@ -194,11 +179,12 @@ class CourseTableForm extends PureComponent {
         return;
       }
       let url = `http://localhost:8080/api/info/course/?${courseType}=${courseInfo}`
+      console.log(url);
       fetch(url)
       .then(res=>res.json())
       .then(data=>
         this.setState({
-          data:data
+          data:data.data
         })
       )
         })

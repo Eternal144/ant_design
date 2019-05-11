@@ -72,6 +72,10 @@ class ClassAnalysisForm extends PureComponent {
       fetch(url)
       .then(res=>res.json())
       .then(data=>{
+        if(data.data.length === 0){
+          error(data.message);
+          return;
+        }
         data = data.data
         data.map(item=>{
           item.x = item.classroom + '班'
@@ -124,6 +128,9 @@ class ClassAnalysisForm extends PureComponent {
     fetch(`http://localhost:8080/api/average/class?grade=${2}`)
     .then(res=>res.json())
     .then(data=>{
+      if(data.data.length == 0){
+        error(data.message)
+      }
       data = data.data
       data.map(item=>{
         item.x = item.classroom + '班'

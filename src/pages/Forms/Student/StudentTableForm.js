@@ -194,12 +194,19 @@ class StudentTableForm extends PureComponent {
         return;
       }
       let url = `http://localhost:8080/api/info/student/?${studentType}=${studentInfo}`
+      console.log(url);
       fetch(url)
       .then(res=>res.json())
       .then(data=>
-        this.setState({
-          data:data.data
-        })
+        {
+          if(data.data.length === 0){
+            error(data.message)
+          }
+          this.setState({
+            data:data.data
+          })
+        }
+        
       )
         })
 }

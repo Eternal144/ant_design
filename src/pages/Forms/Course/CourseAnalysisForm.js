@@ -27,7 +27,28 @@ const error = (str)=>{
   message.error(str);
 }
 const SalesCard = React.lazy(() => import('./SalesCard'));
-
+const tempData = [
+  {
+    x:"<60",
+    y:0
+  },
+  {
+    x:"60-70",
+    y:0
+  },
+  {
+    x:"70-80",
+    y:0
+  },
+  {
+    x:"80-90",
+    y:0
+  },
+  {
+    x:"90-100",
+    y:0
+  }
+]
 
 @connect(({ chart, loading }) => ({
     chart,
@@ -66,17 +87,40 @@ class CourseAnalysisForm extends PureComponent {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       const {courseName} = fieldsValue;
-      if(!courseInfo){
-        alert("请输入学生的信息")
+      if(!courseName){
+        alert("请输入课程名称")
         return;
       }
-      let url = `http://localhost:8080/api/info/course/?${courseType}=${courseInfo}`
+      //自己来分布
+      let url = `http://localhost:8080/api/info/allCourseScores?cname=${courseName}` 
       fetch(url)
       .then(res=>res.json())
-      .then(data=>
-        this.setState({
-          data:data
+      .then(data=>{
+        if(data.data.length === 0){
+          error(data.message)
+          return;
+        }
+        //将数据库的信息返回来
+        data = data.data;
+        
+         //在这里进行计算 <60  60-70 70-80 80-90 90-100
+        data.map(item=>{
+          if(item.scores < 60){
+            tempData[0].y++;
+          }else if(item.scores < 70){
+            tempData[1].y++;
+          }else if(item.scores < 80){
+            tempData[2].y++
+          }else if(item.scores < 90){
+            tempData[3].y++
+          }else if(item.scores <= 100){
+            tempData[4].y++
+          }
         })
+        this.setState({
+          tableData:tempData
+        })
+      }
       )
         })
 }
@@ -128,7 +172,7 @@ class CourseAnalysisForm extends PureComponent {
             delete item.cname;
             delete item.average;
         })
-        console.log(data);
+
         this.setState({
             tableData:data,
         })

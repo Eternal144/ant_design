@@ -27,6 +27,8 @@ const success = ()=>{
 const error = ()=>{
   message.error("添加失败！")
 }
+
+
 @connect(({ loading }) => ({
   submitting: loading.effects['form/submitRegularForm'],
 }))
@@ -87,7 +89,12 @@ class BasicForms extends PureComponent {
         sm: { span: 10, offset: 7 },
       },
     };
-
+  //   const negetiveJudge =(rule,value,callback)=>{
+  //     const { getFieldValue } = form;
+  //     if (value <= 0) {
+  //     callback('请输入正数')
+  //   }
+  // }
     return (
       <PageHeaderWrapper
         title={<FormattedMessage id="课程添加" />}
@@ -110,7 +117,15 @@ class BasicForms extends PureComponent {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: '请输入课程的编号' }),
+                    message: formatMessage({ id: '请输入课程的编号' }),   
+                  },
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
+                  },
+                  {
+                    max:7,
+                    message:"长度需为7",
                   },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入课程的编号' })} />)}
@@ -136,19 +151,34 @@ class BasicForms extends PureComponent {
                     required: true,
                     message: formatMessage({ id: '请输入该课的学分' }),
                   },
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
+                  },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入该课的学分' })} />)}
             </FormItem>
 
-            <FormItem {...formItemLayout} label={<FormattedMessage id="选课年纪" />}>
+            <FormItem {...formItemLayout} label={<FormattedMessage id="选课年级" />}>
               {getFieldDecorator('grade', {
                 rules: [
                   {
                     required: true,
-                    message: formatMessage({ id: '请输入该课程的选课年纪' }),
+                    message: formatMessage({ id: '请输入该课程的选课年级' }),
+                  },
+                  {
+                    max:4,
+                    message:"年级不能超过4"
+                  },
+                  // {
+                  //   validator: negetiveJudge
+                  // },
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
                   },
                 ],
-              })(<Input placeholder={formatMessage({ id: '请输入该课程的选课年纪' })} />)}
+              })(<Input placeholder={formatMessage({ id: '请输入该课程的选课年级' })} />)}
             </FormItem>
 
             <FormItem {...formItemLayout} label={<FormattedMessage id="取消年份" />}>
@@ -157,6 +187,10 @@ class BasicForms extends PureComponent {
                   {
                     required: true,
                     message: formatMessage({ id: '请输入该课的取消年份' }),
+                  },
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
                   },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入该课的取消年份' })} />)}

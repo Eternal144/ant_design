@@ -113,6 +113,14 @@ class BasicForms extends PureComponent {
                     required: true,
                     message: formatMessage({ id: '请输入学生的学号' }),
                   },
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
+                  },
+                  {
+                    max:10,
+                    message:"长度需为10",
+                  },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入学生的学号' })} />)}
             </FormItem>
@@ -145,6 +153,10 @@ class BasicForms extends PureComponent {
                     required: true,
                     message: formatMessage({ id: '请输入学生的入学年龄' }),
                   },
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
+                  },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入学生的入学年龄' })} />)}
             </FormItem>
@@ -155,6 +167,10 @@ class BasicForms extends PureComponent {
                   {
                     required: true,
                     message: formatMessage({ id: '请输入学生的入学年份' }),
+                  },
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
                   },
                 ],
               })(<Input placeholder={formatMessage({ id: '请输入学生的入学年份' })} />)}
@@ -174,7 +190,14 @@ class BasicForms extends PureComponent {
                 </span>
               }
             >
-               {getFieldDecorator('classroom')(<Input placeholder={formatMessage({ id: '请输入学生分配的班级' })} />)}
+               {getFieldDecorator('classroom',{
+                 rules:[
+                  {
+                    message:'只能输入数字',
+                    pattern: /^[0-9]+$/
+                  }
+               ]
+               })(<Input placeholder={formatMessage({ id: '请输入学生分配的班级' })} />)}
             </FormItem>
             
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
