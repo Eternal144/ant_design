@@ -62,7 +62,6 @@ class BasicForms extends PureComponent {
     form.setFieldsValue({
       "sname":null,
       "student_id":null,
-      "gender":null,
       "adm_age":null,
       "adm_year":null,
       "classroom":null

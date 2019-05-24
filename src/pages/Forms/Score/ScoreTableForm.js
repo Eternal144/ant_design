@@ -187,45 +187,51 @@ class ScoreTableForm extends PureComponent {
  
   handleFetch = (str,type,info)=>{
     let url = `http://localhost:8080${str}?${type}=${info}`;
+    console.log(url);
       fetch(url)
       .then(res=>res.json())
       .then(data=>{
         if(data.data.length === 0){
-          error(res.message)
-          return;
+          error(data.message)
+          //return;
         }
         data = data.data;
+        console.log(data);
         //获取到学生的成绩信息。再单独获取一次平均成绩.data是个数组。可能为空
-        if(type === 'sname' && data){
+        if((type === 'sname' || type === 'sid' )&& data){
           let url = `http://localhost:8080/api/average/student?sid=${data[0].sid}`
           fetch(url)
           .then(res=>res.json())
           .then(res=>{
             if(res.data.length === 0){
               error(res.message)
-              return;
+              //return;
             }
             this.setState({
               data:data,
               average:res.data[0].average
             })
           })
-        }else if(type === 'cname' && data[0]){
+        }else if((type === 'cname' || type === 'cid' )&& data[0]){
           let url = `http://localhost:8080/api/average/course?cid=${data[0].cid}`
+          console.log(url);
           fetch(url)
           .then(res=>res.json())
           .then(res=>{
             if(res.data.length === 0){
               error(res.message)
-              return;
+              //return;
             }
+            
             this.setState({
               data:data,
               average:res.data[0].average
             })
           })
         }else{
-          error("查询数据为空，请重新输入")
+          this.setState({
+            data:data,
+          })
         }
 
       })
